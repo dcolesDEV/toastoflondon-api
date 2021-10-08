@@ -18,14 +18,14 @@ fn fetch_names() -> Result<Vec<String>, String> {
 
     match json {
         Ok(json) => Ok(json),
-        Err(_) => return Err(String::from("Error processing names"))
+        Err(_) => Err(String::from("Error processing names"))
     }
 }
 
 fn choose_random_name(names: Vec<String>) -> Result<String, String> {
     let mut rng = thread_rng();
 
-    if names.len() == 0 {
+    if names.is_empty() {
         return Err(String::from("No names available to be randomly selected from"))
     }
 
@@ -33,7 +33,7 @@ fn choose_random_name(names: Vec<String>) -> Result<String, String> {
 
     match random_name {
         Some(random_name) => Ok(String::from(random_name)),
-        None => return Err(String::from("Random name was unable to be selected"))
+        None => Err(String::from("Random name was unable to be selected"))
     }
 }
 
@@ -50,7 +50,7 @@ fn get() -> Result<String, String> {
                 Err(error) => Err(error)
             }
         },
-        Err(error) => return Err(error)
+        Err(error) => Err(error)
     }
 
 }
