@@ -24,8 +24,8 @@ fn fetch_names(file_name: String) -> Result<Vec<String>, String> {
                 Ok(json) => Ok(json),
                 Err(_) => Err(String::from("Error reading from file")),
             }
-        },
-        Err(_) => Err(String::from("File provided does not exist"))
+        }
+        Err(_) => Err(String::from("File provided does not exist")),
     }
 }
 
@@ -71,12 +71,38 @@ mod tests {
     use super::*;
     use rocket::http::Status;
     use rocket::local::Client;
+    use std::fs::File;
+    use std::io::Write;
+    use std::path::PathBuf;
+    use tempfile::tempdir;
+
+    fn convert_file_path(file_path: PathBuf) -> String {
+        file_path.into_os_string().into_string().unwrap()
+    }
 
     #[test]
     fn test_fetch_names() {
-        let names = fetch_names(String::from("names.json")).unwrap();
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test-names.json");
+        let mut file = File::create(&file_path).unwrap();
 
-        assert_eq!(names[4], "Kikini Bamalam")
+        write!(file, "[\"Kikini Bamalam\", \"Sal Commotion\"]").unwrap();
+
+        let names = fetch_names(convert_file_path(file_path)).unwrap();
+
+        assert_eq!(names.len(), 2)
+    }
+
+    #[test]
+    #[should_panic(expected = "Error reading from file")]
+    fn test_fetch_names_with_invalid_file_content() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test-names.txt");
+        let mut file = File::create(&file_path).unwrap();
+
+        write!(file, "Heathcote Pursuit").unwrap();
+
+        fetch_names(convert_file_path(file_path)).unwrap();
     }
 
     #[test]
@@ -87,7 +113,13 @@ mod tests {
 
     #[test]
     fn test_choose_random_name() {
-        let names = fetch_names(String::from("names.json")).unwrap();
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test-names.json");
+        let mut file = File::create(&file_path).unwrap();
+
+        write!(file, "[\"Sookie Houseboat\", \"Basil Watchfair\"]").unwrap();
+
+        let names = fetch_names(convert_file_path(file_path)).unwrap();
         let result = choose_random_name(names.to_owned()).unwrap();
 
         assert_eq!(names.contains(&result), true)
