@@ -17,9 +17,15 @@ fn fetch_names(file_name: String) -> Result<Vec<String>, String> {
             let mut data = String::new();
 
             opened_file.read_to_string(&mut data).unwrap();
-            serde_json::from_str(&data).unwrap()
-        }
-        Err(_) => Err(String::from("File provided does not exist")),
+
+            let json = serde_json::from_str(&data);
+
+            match json {
+                Ok(json) => Ok(json),
+                Err(_) => Err(String::from("Error reading from file")),
+            }
+        },
+        Err(_) => Err(String::from("File provided does not exist"))
     }
 }
 
