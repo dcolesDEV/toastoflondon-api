@@ -96,13 +96,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Error reading from file")]
     fn test_fetch_names_with_invalid_file_content() {
-        let dir = tempdir().unwrap();
-        let file_path = dir.path().join("test-names.txt");
-        let mut file = File::create(&file_path).unwrap();
-
-        write!(file, "Heathcote Pursuit").unwrap();
-
-        fetch_names(convert_file_path(file_path)).unwrap();
+        fetch_names(String::from("Cargo.toml")).unwrap();
     }
 
     #[test]
