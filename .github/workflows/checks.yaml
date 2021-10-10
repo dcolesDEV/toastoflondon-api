@@ -12,49 +12,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install latest nightly 🌃
+      - name: Install latest stable 🦀
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           override: true
       - name: Run Check 🚀
         uses: actions-rs/cargo@v1
         with:
           command: check
+          args: --manifest-path api/Cargo.toml
 
   fmt:
-    name: Rustfmt 🦀
+    name: Rustfmt 🎨
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install latest nightly 🌃
+      - name: Install latest stable 🦀
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           override: true
       - run: rustup component add rustfmt
       - name: Run fmt 🚀
         uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --all -- --check
+          args: --all --manifest-path api/Cargo.toml -- --check
 
   clippy:
     name: Clippy 🖇️
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install latest nightly 🌃
+      - name: Install latest stable 🦀
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           components: clippy
           override: true
       - name: Run Clippy 🚀
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
+          args: --all-features --manifest-path api/Cargo.toml
           name: Clippy Output
