@@ -1,12 +1,20 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use serde::{Deserialize, Serialize};
 
-pub fn get_random_name(names: Vec<String>) -> Result<String, String> {
+#[derive(Serialize, Deserialize)]
+pub struct Name {
+    name: String,
+}
+
+pub fn get_random_name(names: Vec<String>) -> Result<Name, String> {
     let mut rng = thread_rng();
     let random_name = names.choose(&mut rng);
 
     match random_name {
-        Some(random_name) => Ok(String::from(random_name)),
+        Some(random_name) => Ok(Name {
+            name: random_name.to_owned(),
+        }),
         None => Err(String::from("No names to select from.")),
     }
 }
@@ -21,9 +29,9 @@ mod tests {
             String::from("Sal Commotion"),
             String::from("Kikini Bamalam"),
         ];
-        let name = get_random_name(names.clone()).unwrap();
+        let data = get_random_name(names.clone()).unwrap();
 
-        assert_eq!(names.contains(&name), true)
+        assert_eq!(names.contains(&data.name), true)
     }
 
     #[test]
