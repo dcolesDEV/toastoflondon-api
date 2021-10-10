@@ -1,1 +1,3 @@
-/target
+target/
+*.backup
+.vercel
