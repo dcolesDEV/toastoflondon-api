@@ -7,14 +7,14 @@ use ::random::get_random_name;
 mod names;
 
 fn handler(_: Request) -> Result<impl IntoResponse, VercelError> {
-    let random_name = get_random_name(names::get_names());
+    let data = get_random_name(names::get_names());
 
-    match random_name {
-        Ok(random_name) => {
+    match data {
+        Ok(data) => {
             let response = Response::builder()
                 .status(StatusCode::OK)
-                .header("Content-Type", "text/plain")
-                .body(random_name)
+                .header("Content-Type", "application/json")
+                .body(serde_json::to_string(&data).unwrap())
                 .expect("Internal Server Error");
 
             Ok(response)
