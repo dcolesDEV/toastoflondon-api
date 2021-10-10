@@ -13,6 +13,9 @@ fn handler(_: Request) -> Result<impl IntoResponse, VercelError> {
         Ok(data) => {
             let response = Response::builder()
                 .status(StatusCode::OK)
+                .header("Access-Control-Allow-Headers", "Content-Type")
+                .header("Access-Control-Allow-Methods", "GET")
+                .header("Access-Control-Allow-Origin", "*")
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&data).unwrap())
                 .expect("Internal Server Error");
